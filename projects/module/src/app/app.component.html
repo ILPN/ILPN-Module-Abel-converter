@@ -2,6 +2,6 @@
     <h2>TODO title</h2>
     <hr>
 
-    <ilpn-file-upload [descriptionText]="'drop a .dot file here'" [squareContent]="'🐨'"></ilpn-file-upload>
+    <ilpn-file-upload [descriptionText]="'drop a .dot file here'" [squareContent]="'🐨'" (fileContent)="transformFile($event)"></ilpn-file-upload>
 
 </ilpn-page-layout>
