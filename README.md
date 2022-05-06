@@ -5,8 +5,7 @@ The repository operates in tandem with the ILPN-Components repository that is a 
 When cloning the project run:
 
 ```
-git submodule init
-git submodule update
+git clone --recurse-submodules <git repo link>
 ```
 
 to initialize the submodules
