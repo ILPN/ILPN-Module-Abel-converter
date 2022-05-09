@@ -31,7 +31,6 @@ export class FormatConverterService implements OnDestroy {
 
     private convertOne(reader: DotReader, file: DropFile): PetriNet {
         const result = new PetriNet();
-        const placeIds = new Set<string>();
         const counter = new IncrementingCounter();
 
         const graph = reader(file.content);
@@ -41,8 +40,7 @@ export class FormatConverterService implements OnDestroy {
         });
 
         graph.forEachLink(l => {
-            placeIds.add(l.id);
-            const p = new Place(l.id, 0, 0, 0);
+            const p = new Place(`p${counter.next()}`, 0, 0, 0);
             result.addPlace(p);
             result.addArc(this.createArc(counter, result.getTransition(l.fromId) as Transition, p));
             result.addArc(this.createArc(counter, p, result.getTransition(l.toId) as Transition));
@@ -50,12 +48,12 @@ export class FormatConverterService implements OnDestroy {
 
         result.getTransitions().forEach(t => {
             if (t.ingoingArcs.length === 0) {
-                const p = this.createUniquePlace(counter, placeIds, 1);
+                const p = new Place (`p${counter.next()}`, 0, 0, 1);
                 result.addPlace(p);
                 result.addArc(this.createArc(counter, p, t));
             }
             if (t.outgoingArcs.length === 0) {
-                const p = this.createUniquePlace(counter, placeIds, 0);
+                const p = new Place (`p${counter.next()}`, 0, 0, 0);
                 result.addPlace(p);
                 result.addArc(this.createArc(counter, t, p));
             }
@@ -66,13 +64,5 @@ export class FormatConverterService implements OnDestroy {
 
     private createArc(counter: IncrementingCounter, source: Place | Transition, destination: Transition | Place): Arc {
         return new Arc('a' + counter.next(), source, destination, 1);
-    }
-
-    private createUniquePlace(counter: IncrementingCounter, existingPlaces: Set<string>, marking: number): Place {
-        let id;
-        do {
-            id = 'p' + counter.next();
-        } while (existingPlaces.has(id));
-        return new Place(id, 0, 0, marking);
     }
 }
