@@ -2,6 +2,11 @@
     <h2>TODO title</h2>
     <hr>
 
-    <ilpn-file-upload [descriptionText]="'drop a .dot file here'" [squareContent]="'🐨'" (fileContent)="transformFile($event)"></ilpn-file-upload>
+    <div fxLayout="row" fxLayoutAlign="space-evenly start">
+        <ilpn-file-upload [descriptionText]="'drop a .dot file here'" [squareContent]="'🐨'"
+                          (fileContent)="transformFile($event)"></ilpn-file-upload>
+        <ilpn-file-download [descriptionText]="'download transformed result(s)'" [squareContent]="'♥'"
+                            [disabled]="!filesProcessed" [files]="files"></ilpn-file-download>
+    </div>
 
 </ilpn-page-layout>

@@ -9,12 +9,17 @@ import {DropFile} from 'ilpn-components';
 })
 export class AppComponent {
 
+    filesProcessed = false;
+    files: Array<DropFile> = [];
+
     constructor(private _converter: FormatConverterService) {
     }
 
     transformFile(files: Array<DropFile>) {
+        this.filesProcessed = false;
         this._converter.convert(files).subscribe(r => {
-            console.log(r);
+            this.filesProcessed = true;
+
         });
     }
 }
