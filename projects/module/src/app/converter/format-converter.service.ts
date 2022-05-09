@@ -1,7 +1,8 @@
 import {Injectable, OnDestroy} from '@angular/core';
 import {Arc, DropFile, IncrementingCounter, PetriNet, Place, Transition} from 'ilpn-components';
 import {map, Observable, ReplaySubject} from 'rxjs';
-import {DotReader} from './dot-pes/dot-reader';
+import {DotReader} from '../dot-pes/dot-reader';
+import {ConversionResult} from './conversion-result';
 
 @Injectable({
     providedIn: 'root'
@@ -24,8 +25,8 @@ export class FormatConverterService implements OnDestroy {
         this._fromDot$.complete();
     }
 
-    convert(files: Array<DropFile>): Observable<Array<PetriNet>> {
-        return this._fromDot$.asObservable().pipe(map(r => files.map(f => this.convertOne(r, f))));
+    convert(files: Array<DropFile>): Observable<Array<ConversionResult>> {
+        return this._fromDot$.asObservable().pipe(map(r => files.map(f => ({original: f,result: this.convertOne(r, f)}))));
     }
 
     private convertOne(reader: DotReader, file: DropFile): PetriNet {
@@ -54,7 +55,7 @@ export class FormatConverterService implements OnDestroy {
                 result.addArc(this.createArc(counter, p, t));
             }
             if (t.outgoingArcs.length === 0) {
-                const p = this.createUniquePlace(counter, placeIds, 1);
+                const p = this.createUniquePlace(counter, placeIds, 0);
                 result.addPlace(p);
                 result.addArc(this.createArc(counter, t, p));
             }
