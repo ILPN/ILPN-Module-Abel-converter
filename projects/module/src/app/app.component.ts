@@ -1,6 +1,6 @@
 import {Component} from '@angular/core';
 import {FormatConverterService} from './converter/format-converter.service';
-import {DropFile, PetriNetSerialisationService} from 'ilpn-components';
+import {DropFile, FD_PETRI_NET, PetriNetSerialisationService} from 'ilpn-components';
 import {ConversionResult} from './converter/conversion-result';
 
 @Component({
@@ -9,6 +9,8 @@ import {ConversionResult} from './converter/conversion-result';
     styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
+    readonly FD_PN = FD_PETRI_NET;
 
     filesProcessed = false;
     files: Array<DropFile> = [];

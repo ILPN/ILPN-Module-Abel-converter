@@ -1,13 +1,13 @@
 <ilpn-page-layout>
-    <h2>TODO title</h2>
+    <h2>Convert a .dot file into a Petri net</h2>
     <hr>
 
     <div fxLayout="row" fxLayoutAlign="space-evenly start">
-        <ilpn-file-upload [descriptionText]="'drop a .dot pes file here'" [squareContent]="'🐨'"
+        <ilpn-file-upload [descriptionText]="'drop a .dot pes file here'" [squareContent]="'🐨'" [showText]="!filesProcessed"
                           (fileContent)="transformPesFile($event)"></ilpn-file-upload>
-        <ilpn-file-upload [descriptionText]="'drop a .dot lattice file here'" [squareContent]="'🦘'"
+        <ilpn-file-upload [descriptionText]="'drop a .dot lattice file here'" [squareContent]="'🦘'" [showText]="!filesProcessed"
                           (fileContent)="transformLatticeFile($event)"></ilpn-file-upload>
-        <ilpn-file-download [descriptionText]="'download transformed result(s)'" [squareContent]="'♥'"
+        <ilpn-file-download [descriptionText]="'download transformed result(s)'" [fileDisplay]="FD_PN"
                             [disabled]="!filesProcessed" [files]="files"></ilpn-file-download>
     </div>
 
