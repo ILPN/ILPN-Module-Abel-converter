@@ -28,14 +28,22 @@ export class FormatConverterService implements OnDestroy {
         this._fromDot$.complete();
     }
 
-    convert(files: Array<DropFile>): Observable<Array<ConversionResult>> {
+    convertPes(files: Array<DropFile>): Observable<Array<ConversionResult>> {
+        return this.convert(files, (r, f) => this.convertOnePes(r, f));
+    }
+
+    convertLattice(files: Array<DropFile>): Observable<Array<ConversionResult>> {
+        return this.convert(files, (r, f) => this.convertOneLattice(r, f));
+    }
+
+    private convert(files: Array<DropFile>, transformer: (reader: DotReader, file: DropFile) => PetriNet): Observable<Array<ConversionResult>> {
         return this._fromDot$.asObservable().pipe(map(r => files.map(f => ({
             original: f,
-            result: this.convertOne(r, f)
+            result: transformer(r, f)
         }))));
     }
 
-    private convertOne(reader: DotReader, file: DropFile): PetriNet {
+    private convertOnePes(reader: DotReader, file: DropFile): PetriNet {
         const result = new PetriNet();
         const counter = new IncrementingCounter();
 
@@ -68,6 +76,35 @@ export class FormatConverterService implements OnDestroy {
         return result;
     }
 
+    private convertOneLattice(reader: DotReader, file: DropFile): PetriNet {
+        const result = new PetriNet();
+        const counter = new IncrementingCounter();
+
+        const graph = reader(file.content);
+
+        graph.forEachLink(l => {
+            if (l?.data?.label === undefined) {
+                return; // continue
+            }
+
+            const source = this.createPlaceIfMissing(result, l.fromId);
+            const destination = this.createPlaceIfMissing(result, l.toId);
+
+            const t = new Transition(`t${counter.next()}`, 0, 0, this.transformTransitionLabel(l.data.label));
+            result.addTransition(t);
+            result.addArc(this.createArc(counter, source, t));
+            result.addArc(this.createArc(counter, t, destination));
+        });
+
+        result.getPlaces().forEach(p => {
+            if (p.ingoingArcs.length === 0) {
+                p.marking = 1;
+            }
+        });
+
+        return result;
+    }
+
     private createArc(counter: IncrementingCounter, source: Place | Transition, destination: Transition | Place): Arc {
         return new Arc('a' + counter.next(), source, destination, 1);
     }
@@ -85,5 +122,15 @@ export class FormatConverterService implements OnDestroy {
             return input;
         }
         return input.slice(0, occurrences[occurrences.length - 1].index);
+    }
+
+    private createPlaceIfMissing(net: PetriNet, placeId: string): Place {
+        let p = net.getPlace(placeId);
+        if (p !== undefined) {
+            return p;
+        }
+        p = new Place(placeId, 0, 0, 0);
+        net.addPlace(p);
+        return p;
     }
 }

@@ -14,4 +14,7 @@ export interface Link {
     fromId: string;
     toId: string;
     id: string;
+    data?: {
+        label?: string
+    }
 }
