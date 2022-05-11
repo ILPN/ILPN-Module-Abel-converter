@@ -2,11 +2,15 @@ import {Component} from '@angular/core';
 import {FormatConverterService} from './converter/format-converter.service';
 import {DropFile, FD_PETRI_NET, PetriNetSerialisationService} from 'ilpn-components';
 import {ConversionResult} from './converter/conversion-result';
+import {APP_BASE_HREF} from '@angular/common';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
-    styleUrls: ['./app.component.scss']
+    styleUrls: ['./app.component.scss'],
+    providers: [
+        {provide: APP_BASE_HREF, useValue: '/ilovepetrinets/convertadot'}
+    ]
 })
 export class AppComponent {
 
