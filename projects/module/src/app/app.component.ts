@@ -9,7 +9,7 @@ import {APP_BASE_HREF} from '@angular/common';
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.scss'],
     providers: [
-        {provide: APP_BASE_HREF, useValue: '/ilovepetrinets/convertadot'}
+        {provide: APP_BASE_HREF, useValue: '/ilovepetrinets/koala/'}
     ]
 })
 export class AppComponent {
